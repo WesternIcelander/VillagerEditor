@@ -1,0 +1,13 @@
+main: io.siggi.villagereditor.VillagerEditor
+name: VillagerEditor
+version: 1.0
+author: Siggi88
+api-version: 1.16
+depend: ["NBTTool"]
+commands:
+  editvillager:
+    aliases: ["ev", "villagereditor", "ve"]
+    description: "Edit a villager"
+  editrecipe:
+    aliases: ["er"]
+    description: "Edit a recipe"
