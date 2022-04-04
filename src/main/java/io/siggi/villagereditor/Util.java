@@ -6,9 +6,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import hk.siggi.bukkit.nbt.NBTCompound;
-import hk.siggi.bukkit.nbt.NBTTool;
-import hk.siggi.bukkit.nbt.NBTUtil;
+import io.siggi.nbt.NBTCompound;
+import io.siggi.nbt.NBTTool;
+import io.siggi.nbt.NBTToolBukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
@@ -30,7 +30,7 @@ public class Util {
 
 	static {
 		GsonBuilder gsonBuilder = new GsonBuilder();
-		NBTTool.getSerializer().registerTo(gsonBuilder);
+		NBTTool.registerTo(gsonBuilder);
 		gsonBuilder.registerTypeAdapter(MerchantRecipe.class, new TypeAdapter<MerchantRecipe>() {
 			@Override
 			public MerchantRecipe read(JsonReader reader) throws IOException {
@@ -171,8 +171,6 @@ public class Util {
 	}
 
 	public static ItemStack packRecipe(MerchantRecipe recipe) {
-		NBTUtil util = NBTTool.getUtil();
-
 		List<ItemStack> ingredients = recipe.getIngredients();
 		ItemStack output = recipe.getResult();
 		int outputCount = output.getAmount();
@@ -189,10 +187,10 @@ public class Util {
 		for (ItemStack ingredient : ingredients) {
 			if (ingredient.getType() == Material.AIR) continue;
 			int amount = ingredient.getAmount();
-			lore.add("" + ChatColor.RESET + ChatColor.WHITE + (amount > 1 ? (amount + "x ") : "") + util.getItemName(ingredient));
+			lore.add("" + ChatColor.RESET + ChatColor.WHITE + (amount > 1 ? (amount + "x ") : "") + NBTToolBukkit.getItemName(ingredient));
 		}
 		lore.add("" + ChatColor.RESET + ChatColor.AQUA + "Output:");
-		lore.add("" + ChatColor.RESET + ChatColor.WHITE + (outputCount > 1 ? (outputCount + "x ") : "") + util.getItemName(output));
+		lore.add("" + ChatColor.RESET + ChatColor.WHITE + (outputCount > 1 ? (outputCount + "x ") : "") + NBTToolBukkit.getItemName(output));
 		lore.add("" + ChatColor.RESET + ChatColor.AQUA + "Price multiplier: " + ChatColor.WHITE + priceMultiplier);
 		lore.add("" + ChatColor.RESET + ChatColor.AQUA + "Uses: " + ChatColor.WHITE + uses);
 		lore.add("" + ChatColor.RESET + ChatColor.AQUA + "Max Uses: " + ChatColor.WHITE + maxUses);
@@ -202,16 +200,15 @@ public class Util {
 		meta.setLore(lore);
 		stack.setItemMeta(meta);
 
-		NBTCompound tag = util.getTag(stack);
+		NBTCompound tag = NBTToolBukkit.getTag(stack);
 		tag.setString("villagerEditorRecipe", serializeRecipe(recipe));
-		stack = util.setTag(stack, tag);
+		stack = NBTToolBukkit.setTag(stack, tag);
 		return stack;
 	}
 
 	public static MerchantRecipe unpackRecipe(ItemStack stack) {
 		try {
-			NBTUtil util = NBTTool.getUtil();
-			NBTCompound tag = util.getTag(stack);
+			NBTCompound tag = NBTToolBukkit.getTag(stack);
 			return deserializeRecipe(tag.getString("villagerEditorRecipe"));
 		} catch (Exception e) {
 			return null;
