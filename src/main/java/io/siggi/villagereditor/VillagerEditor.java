@@ -141,7 +141,7 @@ public class VillagerEditor extends JavaPlugin implements Listener {
 	public void inventoryCloseEvent(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		VillagerEditorSession session = getSession(player);
-		if (session.inventory == null || session.villager == null) return;
+		if (session == null || session.inventory == null || session.villager == null) return;
 		InventoryView view = event.getView();
 		Inventory topInventory = view.getTopInventory();
 		if (session.inventory != topInventory) return;
